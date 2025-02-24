@@ -1,8 +1,15 @@
 #root {
   
-  
-  padding: 2rem;
+  min-height: 600px;
+  width:100%;
   text-align: center;
+}
+.body{
+  width:100%;
+ 
+}
+.invisible{
+  visibility:hidden;
 }
 
 .logo {

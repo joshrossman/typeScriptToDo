@@ -1,33 +1,17 @@
 import React, {useState} from 'react'
 import {Container, Form, Col, Row, Button } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-
-interface Todo  {
-    id: number;
-    task: string;
-    description?:string;
-    completed: boolean;
-}
+import {Todo, newToDoProps} from '../Models/TaskInterface'
+import MyNavigate from './NavBar';
 
 
 
-interface NewToDoProps{
-    task:string,
-    description:string,
-    newTaskList:Function,
-    newTask:Function,
-    newDescription:Function,
-    taskList: Todo[];
-}
 
 
-
-const NewToDo:React.FC<NewToDoProps>=(task:string,description:string,newTaskList:Function,newTask:Function,newDescription:Function,taskList:Todo[])=>{
+const NewToDo:React.FC<NewToDoProps>=({task,description,completed, setTaskList,setTask,setDescription,taskList})=>{
     
    
-
-
+    
 
     const HandleSubmit =(e:React.FormEvent) =>{
         e.preventDefault()
@@ -35,16 +19,18 @@ const NewToDo:React.FC<NewToDoProps>=(task:string,description:string,newTaskList
             id: Date.now(),
             task: task,
             description: description,
-            completed: false
+            completed: completed
         }
-        newTaskList([...taskList,newTodoItem]);
-        newTask('')
-        newDescription('')
+        setTaskList([...taskList,newTodoItem]);
+        setTask('')
+        setDescription('')
 
 
     }
 
     return(
+        <>
+        <MyNavigate />
         <Container className='justify-content-center align-center'>
         
         <Form>
@@ -54,7 +40,7 @@ const NewToDo:React.FC<NewToDoProps>=(task:string,description:string,newTaskList
             type='text'
             placeholder='New Task'
             value={task}
-            onChange={(e)=>newTask(e.target.value)}>  
+            onChange={(e)=>setTask(e.target.value)}>  
         </Form.Control>
         </Row>
         <Row>
@@ -63,9 +49,10 @@ const NewToDo:React.FC<NewToDoProps>=(task:string,description:string,newTaskList
             type='text'
             placeholder='Description'
             value={description} 
-            onChange={(e)=>newDescription(e.target.value)}/>
+            onChange={(e)=>setDescription(e.target.value)}/>
         </Row>
         <Row>
+            
         <Form.Control
             className='p-3 m-3 bg-info'
             type='submit' 
@@ -79,6 +66,7 @@ const NewToDo:React.FC<NewToDoProps>=(task:string,description:string,newTaskList
         
         
         </Container>
+        </>
     )
 }
 export default NewToDo
