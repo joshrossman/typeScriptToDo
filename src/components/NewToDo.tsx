@@ -1,29 +1,36 @@
 import React, {useState} from 'react'
 import {Container, Form, Col, Row, Button } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Todo, newToDoProps} from '../Models/TaskInterface'
 import MyNavigate from './NavBar';
+import { useContext } from 'react'
+import TaskContext from '../context/TaskContext';
 
 
 
-
-
-const NewToDo:React.FC<NewToDoProps>=({task,description,completed, setTaskList,setTask,setDescription,taskList})=>{
-    
-   
+const NewToDo: React.FC = () =>{
+    const [description, setDescription] = useState<string>('')
+    const [task, setTask] = useState<string>('')
+    const [completed, setCompleted] = useState<boolean>(false)
+    const {TodoList, setTodoList} = useContext(TaskContext);
     
 
     const HandleSubmit =(e:React.FormEvent) =>{
+       
+
         e.preventDefault()
+        console.log('hello',task,description,completed,TodoList)
         const newTodoItem = {
             id: Date.now(),
-            task: task,
-            description: description,
-            completed: completed
+            task,
+            description,
+            completed,
         }
-        setTaskList([...taskList,newTodoItem]);
-        setTask('')
-        setDescription('')
+      
+        setTodoList([...TodoList, newTodoItem]);
+        setTask('');
+        setDescription('');
+        setCompleted(false);
+       
 
 
     }
@@ -33,7 +40,7 @@ const NewToDo:React.FC<NewToDoProps>=({task,description,completed, setTaskList,s
         <MyNavigate />
         <Container className='justify-content-center align-center'>
         
-        <Form>
+        <Form onSubmit={HandleSubmit}>
         <Row>
         <Form.Control
             className='p-3 m-3'
@@ -53,10 +60,11 @@ const NewToDo:React.FC<NewToDoProps>=({task,description,completed, setTaskList,s
         </Row>
         <Row>
             
-        <Form.Control
+        <Button
             className='p-3 m-3 bg-info'
             type='submit' 
-            onClick={HandleSubmit} />
+             >Add Task
+             </Button>
         </Row>
         
      

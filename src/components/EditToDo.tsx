@@ -1,26 +1,31 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import {Container, Form, Col, Row, Button } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Todo, newToDoProps} from '../Models/TaskInterface'
+
 import MyNavigate from './NavBar';
 import '../app.css'
+import TaskContext from '../context/TaskContext';
 
 
 
 
 
 
-const EditToDo:React.FC<NewToDoProps>=({task,description, completed,setTaskList,setTask,setDescription,taskList})=>{
-    
-   
+const EditToDo:React.FC=()=>{
+    const [description, setDescription] = useState<string>('')
+    const [task, setTask] = useState<string>('')
+    const [completed, setCompleted] = useState<boolean>(false)
     const [id,setId]= useState<any>('')
+    const {Todo, setTodo, TodoList, setTodoList} = useContext(TaskContext);
+   
+    
 
-    const HandleSubmit =(e:React.FormEvent, id:Number) =>{
+    const HandleSubmit =(e:React.FormEvent, id:number) =>{
         e.preventDefault();
         
-        const newList = taskList.filter((task) => task.id!==id)
+        const newList = TodoList.filter((task) => task.id!==id)
         const addToList = [...newList, {id:id, task:task, description:description,completed:completed}]
-        setTaskList(addToList)
+        setTodoList(addToList)
         
         console.log(id)
         console.log(e)
@@ -48,7 +53,7 @@ const EditToDo:React.FC<NewToDoProps>=({task,description, completed,setTaskList,
         </Form.Control>
         </Row>
         
-            {taskList.map((myTask)=>(myTask.task===task &&
+            {TodoList.map((myTask)=>(myTask.task===task &&
             <>
                 <Row>
             <Form.Control
