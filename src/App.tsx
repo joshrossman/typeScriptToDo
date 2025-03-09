@@ -9,16 +9,30 @@ import AuthenticationGuard from './components/AuthenticationGaurd';
 import Callback from './components/Callback'
 
 
+interface Todo{
+    id:number,
+    task:string,
+    description:string,
+    completed:boolean
+}
 
 
-const app =()=>{
- 
+const App =()=>{
+    
+    const [todo, setTodo] = useState<Todo>({
+        id:0,
+        task:'',
+        description:'',
+        completed:false
+    });
      
-    const {Todo, setTodo, TodoList, setTodoList} = useContext(TaskContext);
+    const [todoList,setTodoList] = useState<Todo[]>([]);
+
+  
      
     return(
         <>
-        <TaskContext.Provider value={{Todo, setTodo, TodoList, setTodoList}}>
+        <TaskContext.Provider value={{Todo: todo, setTodo: setTodo, TodoList: todoList, setTodoList: setTodoList}}>
         <Routes>
         <Route path='/callback' element={<Callback />} />
         <Route path='/' element={<Home />} />
@@ -34,4 +48,4 @@ const app =()=>{
     )
     
 }
-export default app;
+export default App;

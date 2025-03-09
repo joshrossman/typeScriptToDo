@@ -18,11 +18,13 @@ interface RemoveProps{
     
   
 const DisplayTasks:React.FC =()=>{
-    const {Todo, setTodo, TodoList, setTodoList} = useContext(TaskContext);
+    const {TodoList, setTodoList} = useContext(TaskContext);
     const changeStatus = (id:number, complete:boolean)=>{
+        console.log(complete)
+        
         const newList = TodoList.map((myTask)=>myTask.id===id?
-        ({...myTask,complete:(!myTask.completed)}):
-        (myTask))
+        ({...myTask,completed:(!myTask.completed)}):
+        (myTask))   
         setTodoList(newList);
     }
     const removeTask = (id:number) =>{

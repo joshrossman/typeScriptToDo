@@ -14,9 +14,9 @@ import TaskContext from '../context/TaskContext';
 const EditToDo:React.FC=()=>{
     const [description, setDescription] = useState<string>('')
     const [task, setTask] = useState<string>('')
-    const [completed, setCompleted] = useState<boolean>(false)
+    const [complete, setCompleted] = useState<boolean>(false)
     const [id,setId]= useState<any>('')
-    const {Todo, setTodo, TodoList, setTodoList} = useContext(TaskContext);
+    const {TodoList, setTodoList} = useContext(TaskContext);
    
     
 
@@ -24,15 +24,15 @@ const EditToDo:React.FC=()=>{
         e.preventDefault();
         
         const newList = TodoList.filter((task) => task.id!==id)
-        const addToList = [...newList, {id:id, task:task, description:description,completed:completed}]
+        console.log('test', complete)
+        const addToList = [...newList, {id, task, description,completed:complete}]
         setTodoList(addToList)
         
-        console.log(id)
-        console.log(e)
-        
+      
         setTask('')
         setDescription('')
         setId('')
+        setCompleted(false)
         
 
     }
@@ -53,8 +53,10 @@ const EditToDo:React.FC=()=>{
         </Form.Control>
         </Row>
         
-            {TodoList.map((myTask)=>(myTask.task===task &&
-            <>
+            {TodoList.map(
+                (myTask)=>
+                    myTask.task===task &&(
+            <div key={myTask.id}>
                 <Row>
             <Form.Control
                 className='p-3 m-3'
@@ -64,8 +66,24 @@ const EditToDo:React.FC=()=>{
                 onChange={(e)=>setDescription(e.target.value)}/>
             </Row>
             <Row>
-            
-        <Row>
+            {myTask.completed?
+            (<Form.Check
+                className='p-3 m-3 '
+                type='checkbox'
+                label='Completed'
+                checked={true}
+                onChange={()=>
+                setCompleted(!complete)}/>):
+            (<Form.Check
+                className='p-3 m-3 '
+                type='checkbox'
+                label='Completed'
+                checked={false}
+                onChange={()=>
+                setCompleted(!complete)}/>)
+    }
+            </Row>
+           
         <Form.Control
             className='p-3 m-3 bg-info '
             type='submit' 
@@ -77,9 +95,9 @@ const EditToDo:React.FC=()=>{
                 placeholder='Description'
                 value={myTask.id} 
                 onChange={(e)=>setId(e.target.value)}/>
-            </Row>
-        </Row>
-        </>
+            
+           
+        </div>
             ))}
         
             
