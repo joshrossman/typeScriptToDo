@@ -1,10 +1,11 @@
-import React, {useState, useContext} from 'react'
+import React, {useState, useContext, useEffect} from 'react'
 import {Container, Form, Col, Row, Button } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import MyNavigate from './NavBar';
 import '../app.css'
 import TaskContext from '../context/TaskContext';
+import DisplayTasks from './DisplayTasks';
 
 
 
@@ -18,15 +19,27 @@ const EditToDo:React.FC=()=>{
     const [id,setId]= useState<any>('')
     const {TodoList, setTodoList} = useContext(TaskContext);
    
-    
+    useEffect(()=>{
+        const selectedTask = TodoList.find((myTask)=> myTask.task ===task);
+        if (selectedTask){
+            setDescription(selectedTask.description)
+            setTask(selectedTask.task)
+            setId(selectedTask.id)
+        }
+    }, [task,TodoList]);
 
     const HandleSubmit =(e:React.FormEvent, id:number) =>{
         e.preventDefault();
         
-        const newList = TodoList.filter((task) => task.id!==id)
-        console.log('test', complete)
-        const addToList = [...newList, {id, task, description,completed:complete}]
-        setTodoList(addToList)
+        const selectedTask = TodoList.find((myTask) => myTask.id===id)
+        if (selectedTask){
+            selectedTask.task=task,
+            selectedTask.description=description,
+            selectedTask.completed=complete;
+
+        }
+        
+        
         
       
         setTask('')
@@ -41,47 +54,65 @@ const EditToDo:React.FC=()=>{
         <>
         <MyNavigate />
         <Container className='justify-content-center align-center'>
+        <select 
+        className="p-3 m-3 justify-content-left " 
+        onChange={(e)=>setTask(e.target.value)}>
+        <option>Select Task to Edit</option>
+        {TodoList.map(
+                (myTask)=>
+                   (
+            <option key={myTask.id} >{myTask.task}</option>))}
+        </select>
+               
+                
         
+           
+        
+        
+            
         <Form>
         <Row>
         <Form.Control
             className='p-3 m-3'
             type='text'
-            placeholder='New Task'
+            placeholder='Edit Task'
             value={task}
-            onChange={(e)=>setTask(e.target.value)}>  
+            onChange={(e)=>{setTask(e.target.value)}}>  
         </Form.Control>
         </Row>
-        
+            
             {TodoList.map(
                 (myTask)=>
                     myTask.task===task &&(
             <div key={myTask.id}>
                 <Row>
+        
             <Form.Control
                 className='p-3 m-3'
                 type='text'
                 placeholder='Description'
                 value={description} 
                 onChange={(e)=>setDescription(e.target.value)}/>
+        
             </Row>
             <Row>
-            {myTask.completed?
+            {complete?
             (<Form.Check
                 className='p-3 m-3 '
                 type='checkbox'
-                label='Completed'
+                label='Completed?'
                 checked={true}
                 onChange={()=>
                 setCompleted(!complete)}/>):
             (<Form.Check
                 className='p-3 m-3 '
                 type='checkbox'
-                label='Completed'
+                label='Completed?'
                 checked={false}
                 onChange={()=>
                 setCompleted(!complete)}/>)
     }
+    
             </Row>
            
         <Form.Control
@@ -98,14 +129,17 @@ const EditToDo:React.FC=()=>{
             
            
         </div>
+        
             ))}
         
             
      
 
+      
+
         
         </Form>
-        
+  
         
         </Container>
         </>

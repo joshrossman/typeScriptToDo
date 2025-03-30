@@ -9,7 +9,7 @@ const LoginButton: React.FC = () => {
   const handleLogin = async () => {
     await loginWithRedirect({
       appState: {
-        returnTo: "/callback",
+        returnTo: "/",
       },
       authorizationParams: {
         prompt: "login",
