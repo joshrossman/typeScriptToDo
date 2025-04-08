@@ -1,11 +1,9 @@
-import React, {useState, useContext, useEffect} from 'react'
-import {Container, Form, Col, Row, Button } from 'react-bootstrap'
+import React, {useState, useEffect} from 'react'
+import {Container, Form,  Row,  } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
-
 import MyNavigate from './NavBar';
 import '../app.css'
-import TaskContext from '../context/TaskContext';
-import DisplayTasks from './DisplayTasks';
+import { useTaskContext } from '../context/TaskContext';
 
 
 
@@ -15,39 +13,35 @@ import DisplayTasks from './DisplayTasks';
 const EditToDo:React.FC=()=>{
     const [description, setDescription] = useState<string>('')
     const [task, setTask] = useState<string>('')
+    const [newTask, setNewTask] = useState<string>('')
     const [complete, setCompleted] = useState<boolean>(false)
     const [id,setId]= useState<any>('')
-    const {TodoList, setTodoList} = useContext(TaskContext);
+    const { tasks, dispatch} = useTaskContext();
    
-    useEffect(()=>{
-        const selectedTask = TodoList.find((myTask)=> myTask.task ===task);
-        if (selectedTask){
-            setDescription(selectedTask.description)
-            setTask(selectedTask.task)
-            setId(selectedTask.id)
-        }
-    }, [task,TodoList]);
+    
 
     const HandleSubmit =(e:React.FormEvent, id:number) =>{
         e.preventDefault();
         
-        const selectedTask = TodoList.find((myTask) => myTask.id===id)
+        const selectedTask = tasks.find((myTask) => myTask.id===id)
         if (selectedTask){
-            selectedTask.task=task,
-            selectedTask.description=description,
-            selectedTask.completed=complete;
-
+            const editedTask = {id:selectedTask.id,task:newTask,description:description,completed:complete}
+            dispatch({type:"EDIT_TASK",payload:editedTask})
         }
-        
-        
-        
-      
         setTask('')
+        setNewTask('')
         setDescription('')
         setId('')
         setCompleted(false)
-        
 
+    }
+
+    const setUpEdit =(name:string) => {
+        setTask(name);
+        setNewTask(name);
+        const holdTodo = tasks[tasks.findIndex((task)=>task.task===name)]
+        setDescription(holdTodo.description);
+        setCompleted(holdTodo.completed);
     }
 
     return(
@@ -56,34 +50,27 @@ const EditToDo:React.FC=()=>{
         <Container className='justify-content-center align-center'>
         <select 
         className="p-3 m-3 justify-content-left " 
-        onChange={(e)=>setTask(e.target.value)}>
+        onChange={(e)=>{setUpEdit(e.target.value)}}>
         <option>Select Task to Edit</option>
-        {TodoList.map(
+        {tasks.map(
                 (myTask)=>
                    (
             <option key={myTask.id} >{myTask.task}</option>))}
         </select>
-               
-                
-        
-           
-        
-        
-            
         <Form>
         <Row>
         <Form.Control
             className='p-3 m-3'
             type='text'
             placeholder='Edit Task'
-            value={task}
-            onChange={(e)=>{setTask(e.target.value)}}>  
+            value={newTask}
+            onChange={(e)=>{setNewTask(e.target.value)}}>  
         </Form.Control>
         </Row>
             
-            {TodoList.map(
+            {tasks.map(
                 (myTask)=>
-                    myTask.task===task &&(
+                    (myTask.task===newTask || myTask.task===task) &&(
             <div key={myTask.id}>
                 <Row>
         
@@ -126,21 +113,10 @@ const EditToDo:React.FC=()=>{
                 placeholder='Description'
                 value={myTask.id} 
                 onChange={(e)=>setId(e.target.value)}/>
-            
-           
         </div>
         
             ))}
-        
-            
-     
-
-      
-
-        
         </Form>
-  
-        
         </Container>
         </>
     )

@@ -1,5 +1,5 @@
 import React, {useState, useContext} from 'react';
-import TaskContext from './context/TaskContext';
+import { TaskProvider } from './context/TaskContext';
 import NewToDo from './components/NewToDo';
 import DisplayTasks from './components/DisplayTasks'
 import { Route, Routes } from 'react-router-dom'
@@ -32,7 +32,7 @@ const App =()=>{
      
     return(
         <>
-        <TaskContext.Provider value={{Todo: todo, setTodo: setTodo, TodoList: todoList, setTodoList: setTodoList}}>
+        <TaskProvider >
         <Routes>
         <Route path='/callback' element={<Callback />} />
         <Route path='/' element={<Home />} />
@@ -43,7 +43,7 @@ const App =()=>{
         <Route path='/edit' element={<EditToDo />}/>
         
         </Routes>
-        </TaskContext.Provider>
+        </TaskProvider>
         </>
     )
     

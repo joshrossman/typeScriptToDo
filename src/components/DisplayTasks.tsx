@@ -1,43 +1,30 @@
-import React, {useContext, useState} from 'react'
-import {Card, Col, Button} from 'react-bootstrap'
+import {Card, Button} from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Todo} from '../Models/TaskInterface'
+import { useTaskContext } from  '../context/TaskContext'
 import MyNavigate from './NavBar';
-import TaskContext from '../context/TaskContext';
+import {Todo} from '../context/TaskContext'
 
 
 
-interface DisplayProps{
-    setTaskList: Function,
-    taskList: Todo[];
-}
-
-interface RemoveProps{
-    id:Number
-}
-    
-  
 const DisplayTasks:React.FC =()=>{
-    const {TodoList, setTodoList} = useContext(TaskContext);
-    const changeStatus = (id:number, complete:boolean)=>{
-        console.log(complete)
-        
-        const newList = TodoList.map((myTask)=>myTask.id===id?
-        ({...myTask,completed:(!myTask.completed)}):
-        (myTask))   
-        setTodoList(newList);
+    const { tasks, dispatch } = useTaskContext();
+    const changeStatus = (id:Todo)=>{
+        const myNewStatus = id;
+        myNewStatus.completed=!myNewStatus.completed
+        dispatch({type:'CHANGE_STATUS',payload:myNewStatus})
+       
     }
-    const removeTask = (id:number) =>{
-        const newList = TodoList.filter((task) =>task.id!==id)
-        setTodoList(newList);
-
+    const removeTask = (id:Todo) =>{
+        const toRemove = tasks[tasks.indexOf(id)]
+        dispatch({type:'REMOVE_TASK', payload:toRemove});
+       
     }
-    console.log({TodoList})
+    
     
     return(
         <> 
             <MyNavigate />
-            {TodoList.map((ToDoItem)=>
+            {tasks.map((ToDoItem)=>
             <Card key={ToDoItem.id} className="m-4 p-3">
             {!ToDoItem.completed?
             (<Card.Title className="mx-auto">{ToDoItem.task} </Card.Title>)
@@ -48,11 +35,11 @@ const DisplayTasks:React.FC =()=>{
             
             {
             !ToDoItem.completed?
-            (<Button  className="bg-info"  onClick={()=>changeStatus(ToDoItem.id, ToDoItem.completed)}>Mark Complete</Button>):
-            (<Button  className="bg-info" onClick={()=>changeStatus(ToDoItem.id, ToDoItem.completed)} >Mark Incomplete</Button>)
+            (<Button  className="bg-info"  onClick={()=>changeStatus(ToDoItem)}>Mark Complete</Button>):
+            (<Button  className="bg-info" onClick={()=>changeStatus(ToDoItem)} >Mark Incomplete</Button>)
 
             }
-            <Button  className="bg-danger" onClick={() =>removeTask(ToDoItem.id)} >Remove</Button>
+            <Button  className="bg-danger" onClick={() =>removeTask(ToDoItem)} >Remove</Button>
             </Card>
             )
             }

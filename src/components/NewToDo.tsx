@@ -2,8 +2,10 @@ import React, {useState} from 'react'
 import {Container, Form, Col, Row, Button } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import MyNavigate from './NavBar';
-import { useContext } from 'react'
-import TaskContext from '../context/TaskContext';
+import { useContext, useEffect } from 'react'
+import { useTaskContext } from '../context/TaskContext';
+
+
 
 
 
@@ -11,22 +13,25 @@ const NewToDo: React.FC = () =>{
     const [description, setDescription] = useState<string>('')
     const [task, setTask] = useState<string>('')
     const [completed, setCompleted] = useState<boolean>(false)
-    const {TodoList, setTodoList} = useContext(TaskContext);
+    const { dispatch} = useTaskContext();
     
-
+        
+                   
+                  
+        
     const HandleSubmit =(e:React.FormEvent) =>{
        
 
         e.preventDefault()
-        console.log('hello',task,description,completed,TodoList)
         const newTodoItem = {
             id: Date.now(),
             task,
             description,
             completed,
         }
-      
-        setTodoList([...TodoList, newTodoItem]);
+        
+        dispatch({type:'ADD_TASK', payload:newTodoItem});
+        
         setTask('');
         setDescription('');
         setCompleted(false);
